@@ -56,6 +56,10 @@ class SearchableSubscriber implements EventSubscriber
     public function postFlush(PostFlushEventArgs $args)
     {
         foreach ($this->indexable as $event) {
+            if (method_exists($event, 'isDeleted') && $event->isDeleted()) {
+                continue;
+            }
+
             $this->indexEntity($args->getEntityManager(), $event);
         }
 
